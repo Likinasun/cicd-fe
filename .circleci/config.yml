@@ -6,10 +6,30 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build and Test
+          name: Install Dependencies
+          command: npm install
+      - run:
+          name: Build
+          command: npm run build
+
+  deploy:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run:
+          name: Deploy to GitHub Pages
           command: |
-            npm install
-            npm run build
+            git config --global user.email "likina.jothi@gmail.com"
+            git config --global user.name "likina"
+            git clone https://github.com/Likinasun/cicd-fe.git deploy
+            cd deploy
+            git checkout gh-pages  # Create or switch to the gh-pages branch
+            git rm -rf .           # Remove existing files (if any)
+            cp -r ../path-to-your-build/* .  # Copy the built React app files
+            git add .
+            git commit -m "Deploy to GitHub Pages"
+            git push origin gh-pages
 
 workflows:
   version: 2
@@ -19,8 +39,7 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - main  # Replace with your main branch name
       - deploy:
           requires:
             - build
-
