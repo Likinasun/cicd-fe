@@ -13,13 +13,14 @@ jobs:
 
 workflows:
   version: 2
-  build:
+  build-and-deploy:
     jobs:
       - build:
           filters:
             branches:
               only:
-                - main  # Replace with your main branch name
+                - main
       - deploy:
           requires:
             - build
+
